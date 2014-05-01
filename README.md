@@ -48,7 +48,10 @@ they won't get rebuilt. It also copies some necessary auto-generated runtime fil
 ### Open Issues
 
 - weird issue where cross-compiled binaries targeting linux/386 don't work when run on linux/amd64
-    -bash: ./test: cannot execute binary file
+
+    alan@inconshreveable:~$ ./test 
+    -bash: ./test: No such file or directory
+
 - linux/arm build pulls the armv6 multiarch 1.2 build from dave cheney's repository. what consequences does this have?
 - no checksum validation of downloaded packages
 - No Windows support

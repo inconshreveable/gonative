@@ -8,7 +8,7 @@ gonative is a simple tool which creates a build of Go that can cross compile
 to all platforms while still using the Cgo-enabled versions of the stdlib
 packages. It does this by downloading the binary distributions for each
 platform and copying their libraries into the proper places. It sets
-the correct access time so they don't get rebuilt. It also copies
+the correct mod time so they don't get rebuilt. It also copies
 some auto-generated runtime files into the build as well. gonative does
 not modify any Go that you have installed and builds Go again in a separate
 directory (the current directory by default).

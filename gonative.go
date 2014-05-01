@@ -17,9 +17,8 @@ import (
 
 // XXX: need checksum verification on these downloads
 
-// XXX: this is hardcoded to 1.2
-// Do the different flavors of arm matter if we're just using the libraries and not the go tool?
-const linuxArmUrl = "http://dave.cheney.net/paste/go1.2.linux-arm~multiarch-armv6-1.tar.gz"
+// XXX: this is hardcoded to 1.2.1 GOARM=6, sorry
+const linuxArmUrl = "https://inconshreveable.com/dl/go1.2.1.linux-arm.tar.gz"
 const distUrl = "https://go.googlecode.com/files/go%s.%s.tar.gz"
 const usage = `Usage: gonative [options]
 
@@ -59,7 +58,7 @@ func (p *Platform) String() string {
 }
 
 func (p *Platform) DistUrl(version string) string {
-    if p.OS == "linux" && p.Arch == "arm" {
+    if p.OS == "linux" && p.Arch == "arm" && version == "1.2.1" {
         return linuxArmUrl
     }
 

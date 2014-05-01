@@ -10,11 +10,11 @@ packages. It does this by downloading the binary distributions for each
 platform and copying their libraries into the proper places. It sets
 the correct mod time so they don't get rebuilt. It also copies
 some auto-generated runtime files into the build as well. gonative does
-not modify any Go that you have installed and builds Go again in a separate
-directory (the current directory by default).
+not modify any Go that you have installed and builds a new installaion of 
+Go in a separate directory (the current directory by default).
 
 Once you have a toolchain for cross-compilation, you can use tools like
-github.com/mitchellh/gox to build them.
+[gox](github.com/mitchellh/gox) to cross-compile native builds easily.
 
 gonative will not help you if your own packages rely on cgo
 
@@ -42,11 +42,15 @@ It then bootstraps the toolchain for all target platforms (but does not compile 
 Then, it fetches the official binary distributions for all target platforms and copies
 each pkg/OS\_ARCH directory into the toolchain so that you will link with natively-compiled versions
 of the standard library. It walks all of the copied standard library and sets their modtimes so that
-they won't get rebuilt. It also copies some necessary auto-generated runtime files for each platform
-(z\*\_) into the source directory to make it all work.
+they won't get rebuilt. It also copies some necessary auto-generated runtime source
+files for each platform (z\*\_) into the source directory to make it all work.
 
 ### Open Issues
 
-- linux/arm build pulls a 1.2.1 GOARM=6 build, won't work for ARMv5 platforms
 - no checksum validation of downloaded packages
 - gonative won't run on Windows because it uses unzip/tar unix utilities
+
+### Caveats
+- linux/arm won't work for any other version than 1.2.1 since I'm hosting that build myself
+- gonative uses a GOARM=6 linux/arm build, it won't work for ARMv5 targets (default for any cross-compiled ARM builds anyways)
+- linux_386 binaries that use native libs depend on 32-bit libc/libpthread/elf loader. some 64-bit linux distributions might not have those installed by default

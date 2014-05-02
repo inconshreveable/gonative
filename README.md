@@ -14,7 +14,7 @@ not modify any Go that you have installed and builds a new installaion of
 Go in a separate directory (the current directory by default).
 
 Once you have a toolchain for cross-compilation, you can use tools like
-[gox](github.com/mitchellh/gox) to cross-compile native builds easily.
+[gox](https://github.com/mitchellh/gox) to cross-compile native builds easily.
 
 gonative will not help you if your own packages rely on cgo
 

@@ -20,7 +20,7 @@ gonative will not help you if your own packages rely on cgo
 
 ### Installation
 
-go get github.com/inconshreveable/gonative
+    go get github.com/inconshreveable/gonative
 
 ### Running
 By default, gonative will build a toolchain in a directory called 'go' in your working directory.

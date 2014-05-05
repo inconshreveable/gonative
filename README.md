@@ -45,6 +45,32 @@ of the standard library. It walks all of the copied standard library and sets th
 they won't get rebuilt. It also copies some necessary auto-generated runtime source
 files for each platform (z\*\_) into the source directory to make it all work.
 
+### Example with gox:
+
+Here's an example of how to cross-compile a project:
+
+    $ go get github.com/mitchellh/gox
+    $ go get github.com/inconshreveable/gonative
+    $ cd /your/project
+    $ gonative
+    $ PATH=$PWD/go/bin/:$PATH gox
+    
+This isn't the most optimal way of doing things though. You only ever need one gonative-built 
+Go toolchain. And with the proper GOPATH set up, you don't need to be
+in your project's working directory. I use it mostly like this:
+
+#### One time only setup:
+
+    $ go get github.com/mitchellh/gox
+    $ go get github.com/inconshreveable/gonative
+    $ mkdir -p /usr/local/gonative
+    $ cd /usr/local/gonative
+    $ gonative
+    
+#### Building a project:
+
+    $ PATH=/usr/local/gonative/go/bin/:$PATH gox github.com/your-name/application-name
+    
 ### Open Issues
 
 - no checksum validation of downloaded packages

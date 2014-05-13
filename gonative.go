@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/inconshreveable/go-update"
+	"github.com/inconshreveable/go-update/check"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -19,7 +21,8 @@ import (
 
 // XXX: this is hardcoded to 1.2.1 GOARM=6, sorry
 const linuxArmUrl = "https://inconshreveable.com/dl/go1.2.1.linux-arm.tar.gz"
-const distUrl = "https://go.googlecode.com/files/go%s.%s.tar.gz"
+const oldDistUrl = "https://go.googlecode.com/files/go%s.%s.tar.gz"
+const newDistUrl = "https://storage.googleapis.com/golang/go%s.%s.tar.gz"
 const usage = `Usage: gonative [options]
 
 Cross compiled Go binaries are not suitable for production applications
@@ -66,11 +69,21 @@ func (p *Platform) DistUrl(version string) string {
 	if p.OS == "darwin" {
 		distString += "-osx10.8"
 	}
-	s := fmt.Sprintf(distUrl, version, distString)
+
+	s := fmt.Sprintf(distUrl(version), version, distString)
 	if p.OS == "windows" {
 		s = strings.Replace(s, ".tar.gz", ".zip", 1)
 	}
 	return s
+}
+
+func distUrl(version string) string {
+	// hosting changed after 1.2.1
+	if version > "1.2.1" {
+		return newDistUrl
+	} else {
+		return oldDistUrl
+	}
 }
 
 type Options struct {
@@ -105,8 +118,19 @@ func parseArgs() (*Options, error) {
 	srcPath := flag.String("src", "", "path to go source, empty string mean fetch from internet")
 	targetPath := flag.String("target", ".", "target directory to build go in")
 	platforms := flag.String("platforms", "", "space separated list of platforms to build, emptry string means all")
+	update := flag.Bool("update", false, "ask gonative to update itself")
 
 	flag.Parse()
+
+	if *update {
+		result, err := runUpdate()
+		if err != nil {
+			fmt.Printf("Failed to update: %v\n", err)
+		} else {
+			fmt.Printf("Updated succesfully to version %v!\n", result.Version)
+		}
+		os.Exit(0)
+	}
 
 	opts := &Options{
 		version: *version,
@@ -163,7 +187,7 @@ func buildGo(opts *Options) (err error) {
 
 	// fetch the source from the internet if there's no path to it
 	if opts.srcPath == "" {
-		srcUrl := fmt.Sprintf(distUrl, opts.version, "src")
+		srcUrl := fmt.Sprintf(distUrl(opts.version), opts.version, "src")
 		fmt.Printf("Fetching Go sources from %s\n", srcUrl)
 		opts.srcPath, err = getUrl(srcUrl, "src")
 		if err != nil {
@@ -387,4 +411,44 @@ func getPlatform(p Platform, targetPath, version string, targetReady chan struct
 func copyRecursive(src, dst string) error {
 	fmt.Printf("cp -rp %s %s\n", src, dst)
 	return exec.Command("cp", "-rp", src, dst).Run()
+}
+
+const appVersion = "0.1.1"
+const equinoxAppId = "ap_VQ_K1O_27-tPsncKE3E2GszIPm"
+const publicKey = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvMwGMSLLi3bfq6UZesVR
+H+/EnPyVqbVTJs3zCiFSnLrXMkOMuXfmf7mC23q1cPaGOIFTfmhcx5/vkda10NJ1
+owTAJKXVctC6TUei42vIiBSPsdhzyinNtCdkEkBT2f6Ac58OQV1dUBW/b0fQRQZN
+9tEwW7PK1QnR++bmVu2XzoGEw17XZdeDoXftDBgYAzOWDqapZpHETPobL5oQHeQN
+CVdCaNbNo52/HL6XKyDGCNudVqiKgIoExPzcOL6KKfvMla1Y4mrrArbuNBlE3qxW
+CwmnjtWg+J7vb9rKfZvuVPXPD/RoruZUmHBc1f31KB/QFvn/zXSqeyBcsd6ywCfo
+KwIDAQAB
+-----END PUBLIC KEY-----`
+
+func runUpdate() (*check.Result, error) {
+	params := check.Params{
+		AppVersion: appVersion,
+		AppId:      equinoxAppId,
+	}
+
+	result, err := params.CheckForUpdate("https://api.equinox.io/1/Updates")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("%+v\n", result)
+
+	up, err := update.New().VerifySignatureWithPEM([]byte(publicKey))
+	if err != nil {
+		return nil, err
+	}
+
+	err, errRecover := result.Update(up)
+	if err != nil {
+		if errRecover != nil {
+			return nil, fmt.Errorf("Failed to recover from bad update: %v. Original error: %v", errRecover, err)
+		}
+		return nil, err
+	}
+
+	return result, nil
 }

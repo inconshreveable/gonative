@@ -413,7 +413,7 @@ func copyRecursive(src, dst string) error {
 	return exec.Command("cp", "-rp", src, dst).Run()
 }
 
-const appVersion = "0.1.1"
+const appVersion = "0.1.7"
 const equinoxAppId = "ap_VQ_K1O_27-tPsncKE3E2GszIPm"
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvMwGMSLLi3bfq6UZesVR
@@ -435,7 +435,6 @@ func runUpdate() (*check.Result, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("%+v\n", result)
 
 	up, err := update.New().VerifySignatureWithPEM([]byte(publicKey))
 	if err != nil {

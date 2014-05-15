@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/inconshreveable/go-update"
-	"github.com/inconshreveable/go-update/check"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +13,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/inconshreveable/go-update"
+	"github.com/inconshreveable/go-update/check"
 )
 
 // XXX: need checksum verification on these downloads
@@ -431,17 +432,12 @@ func runUpdate() (*check.Result, error) {
 		AppId:      equinoxAppId,
 	}
 
-	result, err := params.CheckForUpdate("https://api.equinox.io/1/Updates")
-	if err != nil {
-		return nil, err
-	}
-
 	up, err := update.New().VerifySignatureWithPEM([]byte(publicKey))
 	if err != nil {
 		return nil, err
 	}
 
-	err, errRecover := result.Update(up)
+	result, err, errRecover := params.CheckAndApplyUpdate("https://api.equinox.io/1/Updates", up)
 	if err != nil {
 		if errRecover != nil {
 			return nil, fmt.Errorf("Failed to recover from bad update: %v. Original error: %v", errRecover, err)

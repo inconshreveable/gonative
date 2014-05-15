@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/inconshreveable/go-update"
-	"github.com/inconshreveable/go-update/check"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +13,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/inconshreveable/go-update"
+	"github.com/inconshreveable/go-update/check"
 )
 
 // XXX: need checksum verification on these downloads

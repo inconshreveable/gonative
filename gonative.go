@@ -115,7 +115,7 @@ func parseArgs() (*Options, error) {
 		fmt.Fprintf(os.Stderr, "\nFLAGS\n\n")
 		flag.PrintDefaults()
 	}
-	version := flag.String("version", "1.2.1", "version of Go to build")
+	version := flag.String("version", "1.4", "version of Go to build")
 	srcPath := flag.String("src", "", "path to go source, empty string mean fetch from internet")
 	targetPath := flag.String("target", ".", "target directory to build go in")
 	platforms := flag.String("platforms", "", "space separated list of platforms to build, emptry string means all")

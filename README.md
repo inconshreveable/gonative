@@ -23,13 +23,13 @@ gonative will not help you if your own packages rely on cgo
     go get github.com/inconshreveable/gonative
 
 ### Running
-By default, gonative will build a toolchain in a directory called 'go' in your working directory.
+The 'build' command will build a toolchain in a directory called 'go' in your working directory.
 
-    gonative
+    gonative build
 
-To build a particular version of Go (default is 1.2.1):
+To build a particular version of Go (default is 1.4):
 
-    gonative -version=1.1
+    gonative build -version=1.3.3
 
 For options and help:
 
@@ -52,7 +52,7 @@ Here's an example of how to cross-compile a project:
     $ go get github.com/mitchellh/gox
     $ go get github.com/inconshreveable/gonative
     $ cd /your/project
-    $ gonative
+    $ gonative build
     $ PATH=$PWD/go/bin/:$PATH gox
     
 This isn't the most optimal way of doing things though. You only ever need one gonative-built 
@@ -65,7 +65,7 @@ in your project's working directory. I use it mostly like this:
     $ go get github.com/inconshreveable/gonative
     $ mkdir -p /usr/local/gonative
     $ cd /usr/local/gonative
-    $ gonative
+    $ gonative build
     
 #### Building a project:
 
@@ -73,10 +73,8 @@ in your project's working directory. I use it mostly like this:
     
 ### Open Issues
 
-- no checksum validation of downloaded packages
 - gonative won't run on Windows because it uses unzip/tar unix utilities
 
 ### Caveats
-- linux/arm won't work for any other version than 1.2.1 since I'm hosting that build myself
-- gonative uses a GOARM=6 linux/arm build, it won't work for ARMv5 targets (default for any cross-compiled ARM builds anyways)
-- linux_386 binaries that use native libs depend on 32-bit libc/libpthread/elf loader. some 64-bit linux distributions might not have those installed by default
+- no linux/arm support because there are no official builds of linux/arm
+- linux\_386 binaries that use native libs depend on 32-bit libc/libpthread/elf loader. some 64-bit linux distributions might not have those installed by default

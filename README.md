@@ -16,9 +16,16 @@ Go in a separate directory (the current directory by default).
 Once you have a toolchain for cross-compilation, you can use tools like
 [gox](https://github.com/mitchellh/gox) to cross-compile native builds easily.
 
-gonative will not help you if your own packages rely on cgo
+gonative will not help you if your own packages rely on Cgo
 
 ### Installation
+
+    git clone https://github.com/inconshreveable/gonative
+    cd gonative
+    make
+
+Alternatively, you can install gonative via `go get` but the dependenices are not
+locked down.
 
     go get github.com/inconshreveable/gonative
 
@@ -33,7 +40,7 @@ To build a particular version of Go (default is 1.4):
 
 For options and help:
 
-    gonative -help
+    gonative build -h
 
 ### How it works
 

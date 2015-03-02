@@ -54,7 +54,7 @@ func (p *Platform) Download(version string) (path string, err error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return "", fmt.Errorf("Bad response for download: %v", resp.StatusCode)
+		return "", fmt.Errorf("Bad response for download (%s): %v", url, resp.StatusCode)
 	}
 
 	var unpackFn func(io.Reader, string) (string, string, error)

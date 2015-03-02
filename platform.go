@@ -21,8 +21,6 @@ var defaultPlatforms = []Platform{
 	Platform{"darwin", "amd64"},
 	Platform{"windows", "386"},
 	Platform{"windows", "amd64"},
-	Platform{"freebsd", "386"},
-	Platform{"freebsd", "amd64"},
 }
 
 const (
@@ -153,6 +151,21 @@ func unpackTgz(rd io.Reader, name string) (path string, checksum string, err err
 }
 
 var checksums = map[string]string{
+	"https://storage.googleapis.com/golang/go1.4.2.src.tar.gz":                     "460caac03379f746c473814a65223397e9c9a2f6",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-386-osx10.6.tar.gz":      "fb3e6b30f4e1b1be47bbb98d79dd53da8dec24ec",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-386-osx10.8.tar.gz":      "65f5610fdb38febd869aeffbd426c83b650bb408",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-386-osx10.6.pkg":         "3ed569ce33616d5d36f963e5d7cefb55727c8621",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-386-osx10.8.pkg":         "7f3fb2438fa0212febef13749d8d144934bb1c80",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.6.tar.gz":    "00c3f9a03daff818b2132ac31d57f054925c60e7",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.8.tar.gz":    "58a04b3eb9853c75319d9076df6f3ac8b7430f7f",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.6.pkg":       "3fa5455e211a70c0a920abd53cb3093269c5149c",
+	"https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.8.pkg":       "8fde619d48864cb1c77ddc2a1aec0b7b20406b38",
+	"https://storage.googleapis.com/golang/go1.4.2.linux-386.tar.gz":               "50557248e89b6e38d395fda93b2f96b2b860a26a",
+	"https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz":             "5020af94b52b65cc9b6f11d50a67e4bae07b0aff",
+	"https://storage.googleapis.com/golang/go1.4.2.windows-386.zip":                "0e074e66a7816561d7947ff5c3514be96f347dc4",
+	"https://storage.googleapis.com/golang/go1.4.2.windows-386.msi":                "e8bd3d87cb52441b2c9aee7c2c5f5ce7ffccc832",
+	"https://storage.googleapis.com/golang/go1.4.2.windows-amd64.zip":              "91b229a3ff0a1ce6e791c832b0b4670bfc5457b5",
+	"https://storage.googleapis.com/golang/go1.4.2.windows-amd64.msi":              "a914f3dad5521a8f658dce3e1575f3b6792975f0",
 	"https://storage.googleapis.com/golang/go1.4.src.tar.gz":                       "6a7d9bd90550ae1e164d7803b3e945dc8309252b",
 	"https://storage.googleapis.com/golang/go1.4.darwin-386-osx10.6.tar.gz":        "ee31cd0e26245d0e48f11667e4298e2e7f54f9b6",
 	"https://storage.googleapis.com/golang/go1.4.darwin-386-osx10.8.tar.gz":        "4d2ae2f5c0216c44e432c6044b1e1f0aea99f712",

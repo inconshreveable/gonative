@@ -24,7 +24,7 @@ gonative will not help you if your own packages rely on Cgo
     cd gonative
     make
 
-Alternatively, you can install gonative via `go get` but the dependenices are not
+Alternatively, you can install gonative via `go get` but the dependencies are not
 locked down.
 
     go get github.com/inconshreveable/gonative

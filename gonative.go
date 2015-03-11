@@ -15,11 +15,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var Log log.Logger = log.New()
-
-func init() {
-	Log.SetHandler(log.DiscardHandler())
-}
+var Log = log.Root()
 
 const usage = `build Go installations with native stdlib packages
 
@@ -114,7 +110,6 @@ func buildCmd(c *cli.Context) {
 		}
 	}
 
-	Log = log.Root()
 	exit(Build(opts))
 }
 

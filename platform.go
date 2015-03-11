@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 
 	"gopkg.in/inconshreveable/log15.v2"
@@ -61,31 +60,33 @@ func (p *Platform) Download(version string) (path string, err error) {
 	if err != nil {
 		return "", err
 	}
-	defer os.Remove(archive)
+	defer os.Remove(archive.Name())
+	defer archive.Close()
+	if _, err := archive.Seek(0, os.SEEK_SET); err != nil {
+		return "", err
+	}
 
 	path, err = ioutil.TempDir(".", p.String()+"-")
 	if err != nil {
 		return
 	}
-	var unpackCmd *exec.Cmd
+	var unpackFn func(string, *os.File) error
 	switch {
 	case strings.HasSuffix(url, ".zip"):
-		unpackCmd = exec.Command("unzip", archive, "-d", path)
+		unpackFn = unpackZip
 	case strings.HasSuffix(url, ".tar.gz"):
-		unpackCmd = exec.Command("tar", "xzf", archive, "-C", path)
+		unpackFn = unpackTarGz
 	default:
 		return "", fmt.Errorf("Unknown archive type for URL: %v", url)
 	}
 
-	lg.Info("unpack", "cmd", unpackCmd.Args)
-	err = unpackCmd.Run()
-	if err != nil {
-		lg.Error("unpack error", "cmd", unpackCmd.Args, "err", err)
-		return
+	if err := unpackFn(path, archive); err != nil {
+		lg.Error("unpack error", "err", err)
+		return "", err
 	}
 
 	lg.Info("download complete")
-	return path, err
+	return path, nil
 }
 
 func (p *Platform) distURL(version string) string {
@@ -110,29 +111,29 @@ func (p *Platform) distURL(version string) string {
 	return s
 }
 
-func download(lg log15.Logger, rd io.Reader, name string, checksum string) (path string, err error) {
+func download(lg log15.Logger, rd io.Reader, name string, checksum string) (*os.File, error) {
 	f, err := ioutil.TempFile(".", name+"-")
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer func() {
 		if err != nil {
+			f.Close()
 			os.Remove(f.Name())
 		}
 	}()
-	defer f.Close()
 	sha := sha1.New()
 	wr := io.MultiWriter(f, sha)
 	if _, err := io.Copy(wr, rd); err != nil {
-		return "", err
+		return nil, err
 	}
 	if checksum == "" {
 		lg.Warn("no checksum for URL")
 	} else if actual := hex.EncodeToString(sha.Sum(nil)); actual != checksum {
 		lg.Error("checksum mismatch", "expected", checksum, "got", actual)
-		return "", fmt.Errorf("checksum mismatch: %v/%v", actual, checksum)
+		return nil, fmt.Errorf("checksum mismatch: %v/%v", actual, checksum)
 	}
-	return f.Name(), nil
+	return f, nil
 }
 
 var checksums = map[string]string{

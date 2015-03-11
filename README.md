@@ -80,7 +80,7 @@ in your project's working directory. I use it mostly like this:
     
 ### Open Issues
 
-- gonative won't run on Windows because it uses unzip/tar unix utilities
+- gonative is untested on Windows
 
 ### Caveats
 - no linux/arm support because there are no official builds of linux/arm

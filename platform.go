@@ -10,6 +10,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var srcPlatform = Platform{"", ""}
@@ -55,29 +57,33 @@ func (p *Platform) Download(version string) (path string, err error) {
 		return "", fmt.Errorf("Bad response for download (%s): %v", url, resp.StatusCode)
 	}
 
-	var unpackFn func(io.Reader, string) (string, string, error)
-	switch {
-	case strings.HasSuffix(url, ".zip"):
-		unpackFn = unpackZip
-	case strings.HasSuffix(url, ".tar.gz"):
-		unpackFn = unpackTgz
-	default:
-		return "", fmt.Errorf("Unknown archive type for URL: %v", url)
+	archive, err := download(lg, resp.Body, p.String(), checksums[url])
+	if err != nil {
+		return "", err
 	}
-	path, checksum, err := unpackFn(resp.Body, p.String())
-	lg.Debug("unpack", "err", err)
+	defer os.Remove(archive)
+
+	path, err = ioutil.TempDir(".", p.String()+"-")
 	if err != nil {
 		return
 	}
-	expectedChecksum, ok := checksums[url]
-	if !ok {
-		lg.Warn("no checksum for URL", "url", url)
-	} else {
-		if checksum != expectedChecksum {
-			lg.Error("checksum mismatch", "url", url, "expected", expectedChecksum, "got", checksum)
-			return "", fmt.Errorf("checksum mismatch: %v/%v", checksum, expectedChecksum)
-		}
+	var unpackCmd *exec.Cmd
+	switch {
+	case strings.HasSuffix(url, ".zip"):
+		unpackCmd = exec.Command("unzip", archive, "-d", path)
+	case strings.HasSuffix(url, ".tar.gz"):
+		unpackCmd = exec.Command("tar", "xzf", archive, "-C", path)
+	default:
+		return "", fmt.Errorf("Unknown archive type for URL: %v", url)
 	}
+
+	lg.Info("unpack", "cmd", unpackCmd.Args)
+	err = unpackCmd.Run()
+	if err != nil {
+		lg.Error("unpack error", "cmd", unpackCmd.Args, "err", err)
+		return
+	}
+
 	lg.Info("download complete")
 	return path, err
 }
@@ -104,50 +110,29 @@ func (p *Platform) distURL(version string) string {
 	return s
 }
 
-func unpackZip(rd io.Reader, name string) (path string, checksum string, err error) {
+func download(lg log15.Logger, rd io.Reader, name string, checksum string) (path string, err error) {
 	f, err := ioutil.TempFile(".", name+"-")
 	if err != nil {
 		return
 	}
-	defer os.Remove(f.Name())
+	defer func() {
+		if err != nil {
+			os.Remove(f.Name())
+		}
+	}()
 	defer f.Close()
 	sha := sha1.New()
 	wr := io.MultiWriter(f, sha)
-	_, err = io.Copy(wr, rd)
-	if err != nil {
-		return
+	if _, err := io.Copy(wr, rd); err != nil {
+		return "", err
 	}
-	path, err = ioutil.TempDir(".", name+"-")
-	if err != nil {
-		return
+	if checksum == "" {
+		lg.Warn("no checksum for URL")
+	} else if actual := hex.EncodeToString(sha.Sum(nil)); actual != checksum {
+		lg.Error("checksum mismatch", "expected", checksum, "got", actual)
+		return "", fmt.Errorf("checksum mismatch: %v/%v", actual, checksum)
 	}
-	return path, hex.EncodeToString(sha.Sum(nil)), exec.Command("unzip", f.Name(), "-d", path).Run()
-}
-
-func unpackTgz(rd io.Reader, name string) (path string, checksum string, err error) {
-	path, err = ioutil.TempDir(".", name+"-")
-	if err != nil {
-		return
-	}
-	cmd := exec.Command("tar", "xzf", "-", "-C", path)
-	pwr, err := cmd.StdinPipe()
-	if err != nil {
-		return
-	}
-	if err = cmd.Start(); err != nil {
-		return
-	}
-	sha := sha1.New()
-	wr := io.MultiWriter(pwr, sha)
-	if _, err = io.Copy(wr, rd); err != nil {
-		return
-	}
-	pwr.Close()
-	if err = cmd.Wait(); err != nil {
-		return
-	}
-	checksum = hex.EncodeToString(sha.Sum(nil))
-	return
+	return f.Name(), nil
 }
 
 var checksums = map[string]string{

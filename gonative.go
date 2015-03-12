@@ -152,7 +152,7 @@ func Build(opts *Options) error {
 	}
 
 	// copy the source to the target directory
-	err = copyRecursive(opts.SrcPath, targetPath)
+	err = CopyAll(targetPath, opts.SrcPath)
 	if err != nil {
 		return err
 	}
@@ -206,9 +206,9 @@ func getPlatform(p Platform, targetPath, version string, targetReady chan struct
 	<-targetReady
 
 	// copy over the packages
-	targetPkgPath := filepath.Join(targetPath, "pkg")
+	targetPkgPath := filepath.Join(targetPath, "pkg", p.String())
 	srcPkgPath := filepath.Join(path, "go", "pkg", p.String())
-	err = copyRecursive(srcPkgPath, targetPkgPath)
+	err = CopyAll(targetPkgPath, srcPkgPath)
 	if err != nil {
 		errors <- err
 		return
@@ -221,9 +221,8 @@ func getPlatform(p Platform, targetPath, version string, targetReady chan struct
 		srcZPath = filepath.Join(path, "go", "src", "pkg", "runtime", "z*_"+p.String())
 		targetZPath = filepath.Join(targetPath, "src", "pkg", "runtime")
 	}
-	cpCmd := fmt.Sprintf("cp -p %s %s", srcZPath, targetZPath)
-	err = exec.Command("bash", "-c", cpCmd).Run()
-	lg.Debug(cpCmd, "err", err)
+	lg.Debug("copy zfile", "dst", targetZPath, "src", srcZPath, "err", err)
+	CopyFile(targetZPath, srcZPath)
 
 	// change the mod times
 	now := time.Now()
@@ -292,10 +291,4 @@ func distBootstrap(goRoot string, p Platform) (err error) {
 	}
 
 	return bootstrapCmd.Run()
-}
-
-func copyRecursive(src, dst string) error {
-	err := exec.Command("cp", "-rp", src, dst).Run()
-	Log.Info(fmt.Sprintf("cp -rp %s %s", src, dst), "err", err)
-	return err
 }

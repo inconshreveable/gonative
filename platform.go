@@ -138,6 +138,16 @@ func download(lg log15.Logger, rd io.Reader, name string, checksum string) (*os.
 }
 
 var checksums = map[string]string{
+	"https://storage.googleapis.com/golang/go1.5.1.src.tar.gz":                     "0df564746d105f4180c2b576a1553ebca9d9a124",
+	"https://storage.googleapis.com/golang/go1.5.1.darwin-amd64.tar.gz":            "02451b1f3b2c715edc5587174e35438982663672",
+	"https://storage.googleapis.com/golang/go1.5.1.darwin-amd64.pkg":               "857b77a85ba111af1b0928a73cca52136780a75d",
+	"https://storage.googleapis.com/golang/go1.5.1.freebsd-amd64.tar.gz":           "78ac27b7c009142ed0d86b899f1711bb9811b7e1",
+	"https://storage.googleapis.com/golang/go1.5.1.linux-386.tar.gz":               "6ce7328f84a863f341876658538dfdf10aff86ee",
+	"https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz":             "46eecd290d8803887dec718c691cc243f2175fe0",
+	"https://storage.googleapis.com/golang/go1.5.1.windows-386.zip":                "bb071ec45ef39cd5ed9449b54c5dd083b8233bfa",
+	"https://storage.googleapis.com/golang/go1.5.1.windows-386.msi":                "034065452b7233b2a570d4be1218a97c475cded0",
+	"https://storage.googleapis.com/golang/go1.5.1.windows-amd64.zip":              "7815772347ad3e11a096d927c65bfb15d5b0f490",
+	"https://storage.googleapis.com/golang/go1.5.1.windows-amd64.msi":              "0a439f49b546b82f85adf84a79bbf40de2b3d5ba",
 	"https://storage.googleapis.com/golang/go1.4.3.src.tar.gz":                     "486db10dc571a55c8d795365070f66d343458c48",
 	"https://storage.googleapis.com/golang/go1.4.3.darwin-amd64.tar.gz":            "945666c36b42bf859d98775c4f02f807a5bdb6b0",
 	"https://storage.googleapis.com/golang/go1.4.3.darwin-amd64.pkg":               "3d91a21e3217370b80ca26e89a994e8199d583e7",

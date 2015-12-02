@@ -1,14 +1,14 @@
 {
 	"ImportPath": "_/Users/aes/src/gonative",
-	"GoVersion": "go1.3",
+	"GoVersion": "go1.5.1",
 	"Packages": [
 		"github.com/inconshreveable/gonative"
 	],
 	"Deps": [
 		{
-			"ImportPath": "bitbucket.org/kardianos/osext",
+			"ImportPath": "github.com/kardianos/osext",
 			"Comment": "null-15",
-			"Rev": "44140c5fc69ecf1102c5ef451d73cd98ef59b178"
+			"Rev": "10da29423eb9a6269092eebdc2be32209612d9d2"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
@@ -17,11 +17,11 @@
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/axiom",
-			"Rev": "bdc862998f87c6788d6970b4607f02653fc4cf7a"
+			"Rev": "d47f34fee0ce318eb07f0eee4b0e68b5662355ed"
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/go-update",
-			"Rev": "221d034a558b4c21b0624b2a450c076913854a57"
+			"Rev": "8455de157e5e3eee5d680febf627fc4c03b59332"
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",

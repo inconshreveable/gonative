@@ -1,18 +1,34 @@
 {
 	"ImportPath": "github.com/inconshreveable/gonative",
 	"GoVersion": "go1.5.2",
+	"GodepVersion": "v74",
 	"Packages": [
 		"github.com/inconshreveable/gonative"
 	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/cli",
-			"Comment": "1.2.0-187-gc31a797",
+			"Comment": "v1.11.1",
 			"Rev": "c31a7975863e7810c92e2e288a9ab074f9a88f29"
 		},
 		{
+			"ImportPath": "github.com/go-stack/stack",
+			"Comment": "v1.5.2",
+			"Rev": "100eb0c0a9c5b306ca2fb4f165df21d80ada4b82"
+		},
+		{
 			"ImportPath": "github.com/inconshreveable/axiom",
-			"Rev": "89cf457954c8a5520c9281059ae4e5a8121eae7f"
+			"Rev": "082a33c88ebd58a4027c566ceade6ba430a38b8f"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/log15",
+			"Comment": "v2.3-77-gb410a38",
+			"Rev": "b410a384e5471a0f33ce79ce0a68e16133ee91ba"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/log15/term",
+			"Comment": "v2.3-77-gb410a38",
+			"Rev": "b410a384e5471a0f33ce79ce0a68e16133ee91ba"
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",
@@ -43,9 +59,12 @@
 			"Rev": "d8b0b1d421aa1cbf392c05869f8abbc669bb7066"
 		},
 		{
-			"ImportPath": "gopkg.in/inconshreveable/log15.v2",
-			"Comment": "v2.11",
-			"Rev": "b105bd37f74e5d9dc7b6ad7806715c7a2b83fd3f"
+			"ImportPath": "gopkg.in/inconshreveable/go-update.v0/check",
+			"Rev": "d8b0b1d421aa1cbf392c05869f8abbc669bb7066"
+		},
+		{
+			"ImportPath": "gopkg.in/inconshreveable/go-update.v0/download",
+			"Rev": "d8b0b1d421aa1cbf392c05869f8abbc669bb7066"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v1",

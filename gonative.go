@@ -12,7 +12,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/inconshreveable/axiom"
-	log "gopkg.in/inconshreveable/log15.v2"
+	log "github.com/inconshreveable/log15"
 )
 
 var Log = log.Root()
